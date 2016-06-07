@@ -79,10 +79,10 @@ DONE: foreach my $track (@{ $gpx->tracks }) {
                     system("convert", "map.png",
                         "-crop" => $inset_width."x".$inset_height."+".int($x_in_map-$inset_width/2)."+".int($y_in_map-$inset_height/2),
                         "+repage",
+                        "-alpha", "on", "-channel", "a", "-evaluate", "set", "90%",
                         "-draw" => "circle 50,50 52,52",
                         "/dev/shm/doomdoomdoom.png"
                     )==0 or die;
-                    $kph = $frame % 40;
                     my $speed = sprintf("%.1fkm/h", $kph);
                     my $bright = ($kph/35)*20+50;
                     my $angle = $start_angle + (1/40+$kph / 80)*360;
@@ -93,9 +93,10 @@ DONE: foreach my $track (@{ $gpx->tracks }) {
 #                   print "$angle\n";
 #
                     system("convert", "-size", "1280x720", "xc:none", "-fill", "none",
-#                        "-fill", "none", "-stroke", "white", "-strokewidth", $outer_thick, "-draw", "ellipse 900,600 150,150 $start_angle,$angle",
+                        "-fill", "none", "-stroke", "white", "-strokewidth", $outer_thick, "-draw", "ellipse 1200,640 100,100 $start_angle,$angle",
                         "-fill", "none", "-stroke", "hsl(0%, 80%, $bright%", "-strokewidth", $inner_thick, "-draw", "ellipse 1200,640 100,100 $start_angle,$angle",
                         "-stroke", "white", "-strokewidth", "2", "-fill", "blue", "-pointsize", 40, "-gravity", "SouthEast", "-draw", "text 10,20 '$speed'",
+                        "/dev/shm/doomdoomdoom.png", "-gravity", "SouthWest", "-geometry", "+10+10", "-composite",
                         "frame$frame.png"
                     )==0 or die;
                     $frame++;
