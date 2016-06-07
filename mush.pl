@@ -80,25 +80,24 @@ DONE: foreach my $track (@{ $gpx->tracks }) {
                         "-crop" => $inset_width."x".$inset_height."+".int($x_in_map-$inset_width/2)."+".int($y_in_map-$inset_height/2),
                         "+repage",
                         "-draw" => "circle 50,50 52,52",
-                        "inset$frame.png"
+                        "/dev/shm/doomdoomdoom.png"
                     )==0 or die;
+                    $kph = $frame % 40;
+                    my $speed = sprintf("%.1fkm/h", $kph);
+                    my $bright = ($kph/35)*20+50;
+                    my $angle = $start_angle + (1/40+$kph / 80)*360;
 
-#                    my $kph = $frame % 28;
-#                    my $speed = sprintf("%.1fkph", $kph);
-#                    my $bright = ($kph/28.8)*20+50;
-#                    my $angle = $start_angle + (1/40+$kph / 70)*360;
-#
-#                    my $inner_thick = 5+($kph/28.8)*3;
-#                    my $outer_thick = $inner_thick+2;
+                    my $inner_thick = 5+($kph/35)*8;
+                    my $outer_thick = $inner_thick+2;
 #
 #                   print "$angle\n";
 #
-#                    system("convert", "-size", "640x480", "xc:none", "-fill", "none",
-#                        "-stroke", "white", "-strokewidth", "2", "-fill", "blue", "-pointsize", 40, "-gravity", "SouthEast", "-draw", "text 10,10 '$speed'",
-#                        "-fill", "none", "-stroke", "white", "-strokewidth", $outer_thick, "-draw", "ellipse 590,400 100,100 $start_angle,$angle",
-#                        "-fill", "none", "-stroke", "hsl(0%, 80%, $bright%", "-strokewidth", $inner_thick, "-draw", "ellipse 590,400 100,100 $start_angle,$angle",
-#                        "frame$frame.png"
-#                    )==0 or die;
+                    system("convert", "-size", "1280x720", "xc:none", "-fill", "none",
+#                        "-fill", "none", "-stroke", "white", "-strokewidth", $outer_thick, "-draw", "ellipse 900,600 150,150 $start_angle,$angle",
+                        "-fill", "none", "-stroke", "hsl(0%, 80%, $bright%", "-strokewidth", $inner_thick, "-draw", "ellipse 1200,640 100,100 $start_angle,$angle",
+                        "-stroke", "white", "-strokewidth", "2", "-fill", "blue", "-pointsize", 40, "-gravity", "SouthEast", "-draw", "text 10,20 '$speed'",
+                        "frame$frame.png"
+                    )==0 or die;
                     $frame++;
                 }
             }
