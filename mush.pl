@@ -30,7 +30,7 @@ my $gpx = Geo::Gpx->new( input => $fh );
 my $gis = GIS::Distance->new();
 
 my @last;
-my $fps = 1;
+my $fps = 25;
 
 my $frame = 0;
 my $start_angle = 135;
@@ -64,6 +64,7 @@ DONE: foreach my $track (@{ $gpx->tracks }) {
                     Math::Interpolator::Knot->new($last[3]->{time}-$start_time, $last[3]->{lon}+0),
                 );
                 while ($frame <= ($last[2]->{time}-$start_time)*$fps) {
+                    print $frame/$fps."\n";
                     my $olat = $interpolate_lat->y(($frame) / $fps+1);
                     my $olng = $interpolate_lng->y(($frame) / $fps+1);
 
@@ -75,7 +76,6 @@ DONE: foreach my $track (@{ $gpx->tracks }) {
                     my $x_in_map = (($lng - $lng_left)/($lng_right-$lng_left))*$map_width;
                     my $y_in_map = $map_height-(($lat - $lat_top )/($lat_bot  -$lat_top ))*$map_height;
 
-                    print $inset_width."x".$inset_height."+".int($x_in_map-$inset_width/2)."+".int($y_in_map-$inset_height/2)."\n";
                     system("convert", "map.png",
                         "-crop" => $inset_width."x".$inset_height."+".int($x_in_map-$inset_width/2)."+".int($y_in_map-$inset_height/2),
                         "+repage",
